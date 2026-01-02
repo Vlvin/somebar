@@ -224,9 +224,11 @@ void Bar::render()
 	pango_cairo_update_context(_painter, _pangoContext.get());
 	_x = 0;
 
-	renderTags();
 	setColorScheme(colorInactive);
 	renderComponent(_layoutCmp);
+	renderTags();
+	setColorScheme(colorInactive);
+	renderComponent(_titleCmp);
 	renderStatus();
 
 	_painter = nullptr;
@@ -240,13 +242,13 @@ void Bar::render()
 void Bar::renderTags()
 {
 	for (auto &tag : _tags) {
+		if(!tag.numClients)
+			continue;
 		setColorScheme(
 			tag.state & TagState::Active ? colorActive : colorInactive,
 			tag.state & TagState::Urgent);
 		renderComponent(tag.component);
 
-		if(!tag.numClients)
-			continue;
 
 		int s = barfont.height / 9;
 		int w = barfont.height / 6 + 2;
@@ -258,6 +260,15 @@ void Bar::renderTags()
 			cairo_set_line_width(_painter, 1);
 			cairo_stroke(_painter);
 		}
+	}
+  // render focused inactive
+  for (auto &tag : _tags) {
+		if(tag.numClients || !(tag.state & TagState::Active))
+			continue;
+		setColorScheme(
+			tag.state & TagState::Active ? colorActive : colorInactive,
+			tag.state & TagState::Urgent);
+		renderComponent(tag.component);
 	}
 }
 
