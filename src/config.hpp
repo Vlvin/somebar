@@ -24,4 +24,5 @@ static std::vector<std::string> tagNames = {
 
 constexpr Button buttons[] = {
 	{ ClkStatusText,   BTN_RIGHT,  spawn,      {.v = termcmd} },
+	{ ClkTagBar,   BTN_RIGHT,  spawn,      {.v = termcmd} },
 };
